@@ -1,6 +1,8 @@
 import time
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
+
+
 def test_playwrightBasics(playwright):
     browser = playwright.chromium.launch(headless=False) #works with chrom and ege
     context =browser.new_context() #incognito will be open
@@ -14,8 +16,11 @@ def test_playwright_ShortCut(page: Page): #only work with chrome, for firefox wi
 def test_coreLocators(page: Page): #only work with chrome, for firefox will have to set up manually
     page.goto('https://rahulshettyacademy.com/loginpagePractise/')
     page.get_by_label('Username').fill('rahulshettyacademy')
-    page.get_by_label('Password').fill('learning')
+    page.get_by_label('Password').fill('learning2')
     page.get_by_role("combobox").select_option('teach')
     page.locator('#terms').check()
     page.get_by_role('button', name='Sign In').click()
+    #Incorrect username/password.
+    expect(page.get_by_text('Incorrect username/password.')).to_be_visible()
+
     #time.sleep(4)
