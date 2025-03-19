@@ -11,10 +11,14 @@ def pre_work3():
     yield
     print('teardown of driver!!!')
 
-
+@pytest.mark.smoke
 def test_initial_check(pre_work,pre_work2,pre_work3):
     0 ==False
     assert pre_work2 == 'pass'
 
 def test_second_check(pre_work,pre_work3):
+    0 ==False
+
+@pytest.mark.skip
+def test_second_check2(pre_work,pre_work3):
     0 ==False
