@@ -43,6 +43,22 @@ def test_making_API(page:Page):
     print(no_orders_confirmation)
 
 
+def intercept_request(route):
+    route.continue_(url='https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=67ddbcc9c019fb1ad632c845')
+
+def test_making_API_dif_route(page:Page):
+    page.goto('https://rahulshettyacademy.com/client')
+    page.get_by_placeholder('email@example.com').fill('rahulshetty@gmail.com')
+    page.get_by_placeholder('enter your passsword').fill('Iamking@000')
+    page.locator('#login').click()
+
+    page.route('https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=*',intercept_request)
+    page.get_by_role("button", name='ORDERS').click()
+    page.get_by_role('button',name='View').first.click()
+    expect(page.locator('.blink_me')).to_contain_text('You are not authorize to view this order')
+
+
+
 
 
 
