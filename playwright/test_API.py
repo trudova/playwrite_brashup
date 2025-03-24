@@ -35,7 +35,7 @@ def intercept_response(route):
         json=making_payload
     )
 
-
+@pytest.mark.smoke
 def test_making_API(page:Page):
     page.goto('https://rahulshettyacademy.com/client')
     page.get_by_placeholder('email@example.com').fill('rahulshetty@gmail.com')
