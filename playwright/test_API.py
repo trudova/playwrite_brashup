@@ -6,6 +6,7 @@ from playwright.sync_api import Playwright, expect, Page
 
 from pageObjects.loginPage import LoginPage
 from pageObjects.dashboardPage import DashboardPage
+from pageObjects.orderHistoryPage import OrderHistoryPage
 from utils.api_calls import API_calls
 
 with open('data/credantiales.json') as file:
@@ -30,8 +31,9 @@ def test_order_placed(playwright: Playwright,user_creds):
 
     dash_board_page.select_orders_link()
 
-    order_row =page.locator('tr').filter(has_text=orderID)
-    order_row.get_by_role("button", name='View').click()
+    order_history = OrderHistoryPage(page)
+    order_history.get_view_of_specific_order(orderID)
+
     assert orderID in page.url
 
 
