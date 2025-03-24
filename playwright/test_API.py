@@ -1,12 +1,8 @@
 import json
 import time
-
 import pytest
 from playwright.sync_api import Playwright, expect, Page
-
 from pageObjects.loginPage import LoginPage
-from pageObjects.dashboardPage import DashboardPage
-from pageObjects.orderHistoryPage import OrderHistoryPage
 from utils.api_calls import API_calls
 
 with open('data/credantiales.json') as file:
@@ -15,26 +11,18 @@ with open('data/credantiales.json') as file:
 
 
 @pytest.mark.parametrize('user_creds',list_of_creds)
-def test_order_placed(playwright: Playwright,user_creds):
+def test_order_placed(playwright: Playwright,browser_instance, user_creds):
     print(user_creds)
     userName =user_creds['userEmail']
     userPassword =user_creds['userPassword']
-    page = playwright.chromium.launch(headless=False).new_context().new_page()
-
-    loginPage = LoginPage(page)
-    loginPage.navigate()
-    loginPage.login(userName,userPassword)
-
-    dash_board_page = DashboardPage(page)
-
+    loginPage = LoginPage(browser_instance)
+    #loginPage.navigate() - done in fixture
+    dash_board_page = loginPage.login(userName,userPassword)
+    #dash_board_page = DashboardPage(page)
     orderID= API_calls().create_order(playwright,user_creds)
-
-    dash_board_page.select_orders_link()
-
-    order_history = OrderHistoryPage(page)
+    order_history = dash_board_page.select_orders_link()
     order_history.get_view_of_specific_order(orderID)
-
-    assert orderID in page.url
+    assert orderID in browser_instance.url
 
 
 
@@ -58,7 +46,6 @@ def test_making_API(page:Page):
     page.get_by_role("button", name='ORDERS').click()
     no_orders_confirmation= page.locator('.mt-4').text_content()
     print(no_orders_confirmation)
-
 
 def intercept_request(route):
     route.continue_(url='https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=67ddbcc9c019fb1ad632c845')

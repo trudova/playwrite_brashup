@@ -1,3 +1,4 @@
+from .dashboardPage import DashboardPage
 
 
 class LoginPage:
@@ -12,6 +13,8 @@ class LoginPage:
         self.page.get_by_placeholder('email@example.com').fill(userName)
         self.page.get_by_placeholder('enter your passsword').fill(userPassword)
         self.page.locator('#login').click()
+        dash_board_page = DashboardPage(self.page)
+        return dash_board_page
 
 
 
