@@ -4,6 +4,8 @@ import time
 import pytest
 from playwright.sync_api import Playwright, expect, Page
 
+from pageObjects.loginPage import LoginPage
+from pageObjects.dashboardPage import DashboardPage
 from utils.api_calls import API_calls
 
 with open('data/credantiales.json') as file:
@@ -14,15 +16,20 @@ with open('data/credantiales.json') as file:
 @pytest.mark.parametrize('user_creds',list_of_creds)
 def test_order_placed(playwright: Playwright,user_creds):
     print(user_creds)
+    userName =user_creds['userEmail']
+    userPassword =user_creds['userPassword']
     page = playwright.chromium.launch(headless=False).new_context().new_page()
-    page.goto('https://rahulshettyacademy.com/client')
-    page.get_by_placeholder('email@example.com').fill(user_creds['userEmail'])
-    page.get_by_placeholder('enter your passsword').fill(user_creds['userPassword'])
-    page.locator('#login').click()
+
+    loginPage = LoginPage(page)
+    loginPage.navigate()
+    loginPage.login(userName,userPassword)
+
+    dash_board_page = DashboardPage(page)
 
     orderID= API_calls().create_order(playwright,user_creds)
 
-    page.get_by_role("button", name='ORDERS').click()
+    dash_board_page.select_orders_link()
+
     order_row =page.locator('tr').filter(has_text=orderID)
     order_row.get_by_role("button", name='View').click()
     assert orderID in page.url

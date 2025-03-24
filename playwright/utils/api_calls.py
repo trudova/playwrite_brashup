@@ -7,10 +7,7 @@ orderpayload ={
         }
     ]
 }
-logincreds= {
-    "userEmail": "rahulshetty@gmail.com",
-    "userPassword": "Iamking@000"
-}
+
 class API_calls:
     def create_token(self,playwright: Playwright,user_creds):
         api_request_context = playwright.request.new_context(base_url='https://rahulshettyacademy.com')
